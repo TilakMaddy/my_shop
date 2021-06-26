@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/Product.dart';
 import 'package:provider/provider.dart';
+
+import '../models/Product.dart';
+import '../providers/cart.dart';
 import '../screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
@@ -8,6 +10,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // nested provider access
     final product = Provider.of<Product>(context);
+    final cart = Provider.of<Cart>(context, listen: false);
 
     String id = product.id;
     String title = product.title;
@@ -47,7 +50,9 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(id, product.price, title);
+            },
             color: Theme.of(context).accentColor,
           ),
         ),
