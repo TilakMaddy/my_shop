@@ -59,6 +59,9 @@ class Products with ChangeNotifier {
     const url = 'https://valuejoyoptimism.firebaseio.com/products.json';
     try {
       final response = await http.get(Uri.parse(url));
+
+      if (response.body == "null") return;
+
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       List<Product> loadedItems = [];
       extractedData.forEach((prodId, prodData) {
@@ -136,7 +139,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = 'https://valuejoyoptimism.firebaseio.com/products/$id';
+    final url = 'https://valuejoyoptimism.firebaseio.com/products/$id.json';
     final existingProductIndex = _items.indexWhere((p) => p.id == id);
     final existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);

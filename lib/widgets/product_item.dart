@@ -8,6 +8,7 @@ import '../screens/product_details_screen.dart';
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final scafCtx = ScaffoldMessenger.of(context);
     // nested provider access
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context, listen: false);
@@ -43,8 +44,16 @@ class ProductItem extends StatelessWidget {
             icon: Icon(
               product.isFavourite ? Icons.favorite : Icons.favorite_border,
             ),
-            onPressed: () {
-              product.toggleFavoutiteStatus();
+            onPressed: () async {
+              try {
+                await product.toggleFavoutiteStatus();
+              } catch (error) {
+                scafCtx.showSnackBar(
+                  SnackBar(
+                    content: Text('Could not delete'),
+                  ),
+                );
+              }
             },
             color: Theme.of(context).accentColor,
           ),

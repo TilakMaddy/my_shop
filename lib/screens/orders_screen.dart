@@ -4,8 +4,30 @@ import 'package:my_shop/widgets/app_drawer.dart';
 import 'package:my_shop/widgets/order_item.dart';
 import 'package:provider/provider.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   static const String routeName = '/orders';
+
+  @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  var ranOnce = false;
+  var _isLoading = true;
+
+  @override
+  void didChangeDependencies() {
+    if (ranOnce) return;
+
+    Provider.of<Orders>(context, listen: false).fetchAndSetOrders().then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+
+    ranOnce = true;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +38,22 @@ class OrdersScreen extends StatelessWidget {
         title: Text('Your Order'),
       ),
       drawer: AppDrawer(),
-      body: ListView.builder(
-        itemBuilder: (ctx, index) {
-          return OrderScreenItem(orders.orders[index]);
-        },
-        itemCount: orders.orders.length,
-      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () async {
+                await Provider.of<Orders>(context, listen: false)
+                    .fetchAndSetOrders();
+              },
+              child: orders.orders.length == 0
+                  ? Center(child: Text('You have no orders !'))
+                  : ListView.builder(
+                      itemBuilder: (ctx, index) {
+                        return OrderScreenItem(orders.orders[index]);
+                      },
+                      itemCount: orders.orders.length,
+                    ),
+            ),
     );
   }
 }
