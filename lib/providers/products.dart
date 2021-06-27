@@ -56,7 +56,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://valuejoyoptimism.firebaseio.com/products.json';
+    const url = 'https://valuejoyoptimism.firebaseio.com/products';
     try {
       final response = await http.get(Uri.parse(url));
 
