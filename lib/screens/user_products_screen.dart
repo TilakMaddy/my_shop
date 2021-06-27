@@ -28,7 +28,7 @@ class UserProductsScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(8),
         child: Container(
-          height: 300,
+          height: 1000,
           child: ListView.builder(
             itemBuilder: (_, i) {
               return Column(
@@ -36,6 +36,7 @@ class UserProductsScreen extends StatelessWidget {
                   UserProductItem(
                     productsData.items[i].title,
                     productsData.items[i].imageUrl,
+                    productsData.items[i].id,
                   ),
                   Divider(),
                 ],

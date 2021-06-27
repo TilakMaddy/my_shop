@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/models/Product.dart';
+import 'package:my_shop/providers/products.dart';
+import 'package:provider/provider.dart';
 
 class EditProductsScreen extends StatefulWidget {
   EditProductsScreen({Key? key}) : super(key: key);
@@ -13,13 +15,21 @@ class EditProductsScreen extends StatefulWidget {
 class _EditProductsScreenState extends State<EditProductsScreen> {
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
+  var coming_from = 0; // 0 -> add, 1 -> edit
   var _editedProd = Product(
-    id: "",
+    id: '',
     title: '',
     price: 0,
     description: '',
     imageUrl: '',
   );
+  var isInit = true;
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
 
   @override
   void dispose() {
@@ -33,17 +43,42 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       return;
     }
     _form.currentState!.save();
-    print(_editedProd.description);
-    print(_editedProd.imageUrl);
-    print(_editedProd.price);
-    print(_editedProd.title);
+    Provider.of<Products>(context, listen: false).addProduct(_editedProd);
+    Navigator.of(context).pop();
+    // print(_editedProd.description);
+    // print(_editedProd.imageUrl);
+    // print(_editedProd.price);
+    // print(_editedProd.title);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (isInit) {
+      final prodId = ModalRoute.of(context)?.settings.arguments;
+      if (prodId == null) {
+        isInit = false;
+        return;
+      }
+
+      coming_from = 1;
+      _editedProd = Provider.of<Products>(context, listen: false)
+          .findById(prodId as String);
+      _initValues = {};
+      _initValues['title'] = _editedProd.title;
+      _initValues['description'] = _editedProd.description;
+      _initValues['price'] = _editedProd.price.toString();
+      // _initValues['imageUrl'] = _editedProd.imageUrl;
+      _imageUrlController.text = _editedProd.imageUrl;
+    }
+    isInit = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: Text(coming_from == 0 ? 'Add Product' : 'Edit Product'),
         actions: [
           IconButton(
             onPressed: () {
@@ -60,6 +95,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _initValues['title'],
                 decoration: InputDecoration(
                   labelText: 'Title',
                 ),
@@ -83,6 +119,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _initValues['price'],
                 decoration: InputDecoration(
                   labelText: 'Price',
                 ),
@@ -111,6 +148,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _initValues['description'],
                 decoration: InputDecoration(
                   labelText: 'Description',
                 ),
