@@ -42,9 +42,10 @@ class Products with ChangeNotifier {
   // ];
 
   final String authToken;
+  final String userId;
   List<Product> _items = [];
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this._items, this.userId);
 
   List<Product> get items {
     return [..._items];
@@ -66,6 +67,13 @@ class Products with ChangeNotifier {
 
       if (response.body == "null") return;
 
+      final favUrl =
+          'https://valuejoyoptimism.firebaseio.com/userFavourites/$userId.json?auth=$authToken';
+
+      final favResponse = await http.get(Uri.parse(favUrl));
+
+      final favData = json.decode(favResponse.body);
+
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       List<Product> loadedItems = [];
       extractedData.forEach((prodId, prodData) {
@@ -76,7 +84,7 @@ class Products with ChangeNotifier {
             imageUrl: prodData['imageUrl'],
             price: prodData['price'],
             title: prodData['title'],
-            isFavourite: prodData['isFavourite'],
+            isFavourite: favData == null ? false : favData[prodId] ?? false,
           ),
         );
       });
@@ -101,7 +109,6 @@ class Products with ChangeNotifier {
           'description': p.description,
           'imageUrl': p.imageUrl,
           'price': p.price,
-          'isFavourite': p.isFavourite,
         },
       ),
     )

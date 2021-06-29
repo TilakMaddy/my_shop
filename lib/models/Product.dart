@@ -20,24 +20,18 @@ class Product with ChangeNotifier {
     required this.title,
   });
 
-  Future<void> toggleFavoutiteStatus(String token) async {
+  Future<void> toggleFavoutiteStatus(String token, String userId) async {
     this.isFavourite = !this.isFavourite;
     notifyListeners();
 
     final url =
-        'https://valuejoyoptimism.firebaseio.com/products/$id.json?auth=$token';
+        'https://valuejoyoptimism.firebaseio.com/userFavourites/$userId/$id.json?auth=$token';
 
     try {
-      final response = await http.patch(
+      final response = await http.put(
         Uri.parse(url),
         body: json.encode(
-          {
-            'title': title,
-            'imageUrl': imageUrl,
-            'description': description,
-            'price': price,
-            'isFavourite': isFavourite,
-          },
+          isFavourite,
         ),
       );
       if (response.statusCode >= 400) {

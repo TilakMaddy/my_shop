@@ -10,6 +10,10 @@ class Auth with ChangeNotifier {
   // ignore: unused_field
   String? _userId;
 
+  String? get userId {
+    return _userId;
+  }
+
   bool get isAuth {
     return token != null;
   }

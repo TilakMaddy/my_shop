@@ -48,7 +48,7 @@ class ProductItem extends StatelessWidget {
             ),
             onPressed: () async {
               try {
-                await product.toggleFavoutiteStatus(auth.token!);
+                await product.toggleFavoutiteStatus(auth.token!, auth.userId!);
               } catch (error) {
                 scafCtx.showSnackBar(
                   SnackBar(
