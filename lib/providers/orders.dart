@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:my_shop/models/http_exception.dart';
 import 'package:my_shop/providers/cart.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +20,9 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
+  final String authToken;
+
+  Orders(this.authToken, this._orders);
 
   List<OrderItem> get orders {
     return [..._orders];
@@ -29,12 +33,18 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders() async {
-    const url = "https://valuejoyoptimism.firebaseio.com/orders.json";
+    final url =
+        "https://valuejoyoptimism.firebaseio.com/orders.json?auth=$authToken";
     final response = await http.get(Uri.parse(url));
 
     if (response.body == "null") return;
 
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
+    if (extractedData['error'] != null) {
+      print("throwing exception!");
+      throw HttpException(extractedData['error']);
+    }
 
     List<OrderItem> loadedOrders = [];
 
@@ -62,7 +72,8 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartItems, double total) async {
-    const url = "https://valuejoyoptimism.firebaseio.com/orders.json";
+    final url =
+        "https://valuejoyoptimism.firebaseio.com/orders.json?auth=$authToken";
 
     final timestamp = DateTime.now();
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/providers/auth.dart';
 import 'package:provider/provider.dart';
 
 import '../models/Product.dart';
@@ -12,6 +13,7 @@ class ProductItem extends StatelessWidget {
     // nested provider access
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context, listen: false);
+    final auth = Provider.of<Auth>(context, listen: false);
 
     String id = product.id;
     String title = product.title;
@@ -46,7 +48,7 @@ class ProductItem extends StatelessWidget {
             ),
             onPressed: () async {
               try {
-                await product.toggleFavoutiteStatus();
+                await product.toggleFavoutiteStatus(auth.token!);
               } catch (error) {
                 scafCtx.showSnackBar(
                   SnackBar(

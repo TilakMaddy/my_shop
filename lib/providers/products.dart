@@ -41,7 +41,10 @@ class Products with ChangeNotifier {
   //   ),
   // ];
 
+  final String authToken;
   List<Product> _items = [];
+
+  Products(this.authToken, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -56,7 +59,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://valuejoyoptimism.firebaseio.com/products';
+    final url =
+        'https://valuejoyoptimism.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(Uri.parse(url));
 
@@ -79,12 +83,14 @@ class Products with ChangeNotifier {
       _items = loadedItems;
       notifyListeners();
     } catch (error) {
+      print(error);
       throw error;
     }
   }
 
   Future<void> addProduct(Product p) {
-    const url = 'https://valuejoyoptimism.firebaseio.com/products.json';
+    final url =
+        'https://valuejoyoptimism.firebaseio.com/products.json?auth=$authToken';
 
     return http
         .post(
@@ -121,7 +127,8 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((element) => element.id == id);
     if (prodIndex < 0) return;
 
-    final url = 'https://valuejoyoptimism.firebaseio.com/products/$id.json';
+    final url =
+        'https://valuejoyoptimism.firebaseio.com/products/$id.json?auth=$authToken';
     await http.patch(
       Uri.parse(url),
       body: json.encode(
@@ -139,7 +146,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = 'https://valuejoyoptimism.firebaseio.com/products/$id.json';
+    final url =
+        'https://valuejoyoptimism.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex = _items.indexWhere((p) => p.id == id);
     final existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);

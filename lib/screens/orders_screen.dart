@@ -14,6 +14,7 @@ class OrdersScreen extends StatefulWidget {
 class _OrdersScreenState extends State<OrdersScreen> {
   var ranOnce = false;
   var _isLoading = true;
+  var _error = false;
 
   @override
   void didChangeDependencies() {
@@ -21,6 +22,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
     Provider.of<Orders>(context, listen: false).fetchAndSetOrders().then((_) {
       setState(() {
+        _isLoading = false;
+      });
+    }).catchError((error) {
+      print("caught error!hhe");
+      setState(() {
+        _error = true;
         _isLoading = false;
       });
     });
@@ -43,16 +50,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
           : RefreshIndicator(
               onRefresh: () async {
                 await Provider.of<Orders>(context, listen: false)
-                    .fetchAndSetOrders();
+                    .fetchAndSetOrders()
+                    .catchError((err) {
+                  setState(() {
+                    _error = true;
+                  });
+                });
               },
-              child: orders.orders.length == 0
-                  ? Center(child: Text('You have no orders !'))
-                  : ListView.builder(
-                      itemBuilder: (ctx, index) {
-                        return OrderScreenItem(orders.orders[index]);
-                      },
-                      itemCount: orders.orders.length,
-                    ),
+              child: _error
+                  ? Center(child: Text('Permission denied'))
+                  : (orders.orders.length == 0
+                      ? Center(child: Text('You have no orders !'))
+                      : ListView.builder(
+                          itemBuilder: (ctx, index) {
+                            return OrderScreenItem(orders.orders[index]);
+                          },
+                          itemCount: orders.orders.length,
+                        )),
             ),
     );
   }

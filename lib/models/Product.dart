@@ -20,11 +20,12 @@ class Product with ChangeNotifier {
     required this.title,
   });
 
-  Future<void> toggleFavoutiteStatus() async {
+  Future<void> toggleFavoutiteStatus(String token) async {
     this.isFavourite = !this.isFavourite;
     notifyListeners();
 
-    final url = 'https://valuejoyoptimism.firebaseio.com/products/$id.json';
+    final url =
+        'https://valuejoyoptimism.firebaseio.com/products/$id.json?auth=$token';
 
     try {
       final response = await http.patch(
