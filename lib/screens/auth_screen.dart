@@ -165,9 +165,11 @@ class _AuthCardState extends State<AuthCard> {
       _showErrorDialog(errorMessage);
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _switchAuthMode() {
