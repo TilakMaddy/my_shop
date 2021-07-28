@@ -45,8 +45,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Flutter Demo',
             theme: ThemeData(
-              primarySwatch: Colors.purple,
-              accentColor: Colors.deepOrange,
+              primarySwatch: Colors.green,
+              accentColor: Colors.blueAccent,
               fontFamily: 'Lato',
             ),
             home: auth.isAuth
