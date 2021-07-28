@@ -21,7 +21,7 @@ Flutter / Dart by Google
 
 <img src="https://res.cloudinary.com/returnoftheking/image/upload/v1627510123/my_shop/Screenshot_1627508381_olwdvi.png" alt="screenshot" width="300" />
 
-<img src="https://res.cloudinary.com/returnoftheking/image/upload/v1627510109/my_shop/Screenshot_1627509063_zendey.png" alt="screenshot" width="700" />
+<img src="https://res.cloudinary.com/returnoftheking/image/upload/v1627510109/my_shop/Screenshot_1627509063_zendey.png" alt="screenshot" width="300" />
 
 <img src="https://res.cloudinary.com/returnoftheking/image/upload/v1627510104/my_shop/Screenshot_1627509042_lrq4rp.png" alt="screenshot" width="300" />
 
